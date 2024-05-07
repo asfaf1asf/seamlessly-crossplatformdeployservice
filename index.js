@@ -1,31 +1,40 @@
-function spiralOrder(matrix) {
-  if (matrix.length === 0) return [];
-  const result = [];
-  let top = 0;
-  let bottom = matrix.length - 1;
-  let left = 0;
-  let right = matrix[0].length - 1;
-  while (top <= bottom && left <= right) {
-    for (let i = left; i <= right; i++) {
-      result.push(matrix[top][i]);
-    }
-    top++;
-    for (let i = top; i <= bottom; i++) {
-      result.push(matrix[i][right]);
-    }
-    right--;
-    if (top <= bottom) {
-      for (let i = right; i >= left; i--) {
-        result.push(matrix[bottom][i]);
+const strandSort = (arr) => {
+  const extract = (arr, x) => {
+    const extracted = [];
+    let i = 0;
+    while (i < arr.length) {
+      if (x.includes(arr[i])) {
+        extracted.push(arr.splice(i, 1)[0]);
+      } else {
+        i++;
       }
-      bottom--;
     }
-    if (left <= right) {
-      for (let i = bottom; i >= top; i--) {
-        result.push(matrix[i][left]);
+    return extracted;
+  };
+  const merge = (a, b) => {
+    const merged = [];
+    let i = 0;
+    let j = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] < b[j]) {
+        merged.push(a[i]);
+        i++;
+      } else {
+        merged.push(b[j]);
+        j++;
       }
-      left++;
     }
+    return merged.concat(i < a.length ? a.slice(i) : b.slice(j));
+  };
+  let sorted = [];
+  while (arr.length > 0) {
+    let sublist = [arr.shift()];
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] > sublist[sublist.length - 1]) {
+        sublist.push(arr.splice(i, 1)[0]);
+      }
+    }
+    sorted = merge(sorted, sublist);
   }
-  return result;
-}
+  return sorted;
+};
